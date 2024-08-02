@@ -142,7 +142,7 @@ def connect_to_server(key):
         client.close()
 
 if __name__ == "__main__":
-    key =   # Sample key for XOR encryption 0-255
+    key = 123 # Sample key for XOR encryption 0-255
     mode = input("Enter 's' to start as server or 'c' to connect as client: ").strip().lower()
     if mode == 's':
         start_server(key)
