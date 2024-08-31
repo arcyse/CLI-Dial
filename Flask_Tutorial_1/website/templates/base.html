@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+
+<!--* This base template is used for all pages and are overwritten for page-specific content-->
+<!--* Child templates inherit the base template and override data -->
+<!--* NOTE: Jinja is a templating language/engine that allows for using python code in HTML (without JavaScript)-->
+
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <!-- Fits to width of device: -->
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <!-- Link to a CDN that helps load custom bootstrap CSS for better-looking UI: -->
+    <link
+      rel="stylesheet"
+      href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css"
+      integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh"
+      crossorigin="anonymous"
+    />
+    <link
+      rel="stylesheet"
+      href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css"
+      crossorigin="anonymous"
+    />
+
+    <!-- Create a "block" for the title. Right now home page has "Home" as the title block: -->
+    <!-- However, any child template that inherits the base template can ovverride the data within the block: -->
+     <!-- NOTE: Title refers to the title of the tab (not displayed on the Web page)-->
+    <title>{% block title %}Ovveridable Title{% endblock %}</title>
+</head>
+
+<body>
+
+    <!-- Nav-bar: -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <button
+          class="navbar-toggler"
+          type="button"
+          data-toggle="collapse"
+          data-target="#navbar"
+        >
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbar">
+          <div class="navbar-nav">
+            {% if user.is_authenticated %}
+            <a class="nav-item nav-link" id="home" href="/">Home</a>
+            <a class="nav-item nav-link" id="logout" href="/logout">Logout</a>
+            {% else %}
+            <a class="nav-item nav-link" id="login" href="/login">Login</a>
+            <a class="nav-item nav-link" id="signUp" href="/sign-up">Sign Up</a>
+            {% endif %}
+          </div>
+        </div>
+      </nav>
+    
+    <!-- Error/Success alerts to user after message flashes: -->
+    {% with messages = get_flashed_messages(with_categories=true)%}
+      <!-- Check if any messages are present -->
+      {% if messages %}
+        <!-- For every flashed message, check the type and display an alert -->
+        {% for category,message in messages %}
+          <!--! ERROR MESSAGE: -->
+          {% if category == 'error'%}
+            <div class="alert alert-danger alter-dismissable fade show" role="alert">
+              {{ message }}
+              <button type="button" class="close" data-dismiss="alert">
+                <span aria-hidden="true">&times;</span>
+              </button>
+            </div>
+          {% else %}
+          <!--* SUCCESS MESSAGE:-->
+            <div class="alert alert-success alter-dismissable fade show" role="alert">
+              {{ message }}
+              <button type="button" class="close" data-dismiss="alert">
+                <span aria-hidden="true">&times;</span>
+              </button>
+            </div>
+          {% endif %}
+        {% endfor%}
+      {% endif %}
+    {% endwith %}
+
+    <!-- Content block for child templates: -->
+    <div class="container">{% block content %} {% endblock %}</div>
+
+    <!--* Load the javascript for the bootstrap CSS framework (contains animations, etc.): -->
+    <!-- NOTE: If you wanted to write your own JavaScript, you would do it in the static folder -->
+    <!-- Static folder contains your own: 1)Images 2)CSS 3)JavaScript -->
+    <script
+      src="https://code.jquery.com/jquery-3.2.1.slim.min.js"
+      integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN"
+      crossorigin="anonymous"
+    ></script>
+    <script
+      src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"
+      integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
+      crossorigin="anonymous"
+    ></script>
+    <script
+      src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"
+      integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
+      crossorigin="anonymous"
+    ></script>
+
+    <!-- Custom javascript: -->
+    {% block javascript %}
+    <script type="text/javascript">
+      function deleteNote(noteId) {
+  fetch("/delete-note", {
+    method: "POST",
+    body: JSON.stringify({ noteId: noteId }),
+  }).then((_res) => {
+    window.location.href = "/";
+  });
+  }
+</script>
+{% endblock %}
+
+</body>
+
+</html>
