@@ -8,8 +8,6 @@ from cryptography.hazmat.primitives import padding
 from cryptography.hazmat.backends import default_backend
 import base64
 
-#* Reference: https://www.youtube.com/watch?v=mkXdvs8H7TA
-
 # Create an instance of the app:
 app = Flask(__name__)
 app.config["SECRET_KEY"] = "very_secret_key" #TODO: See how to make this more secure
