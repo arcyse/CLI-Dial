@@ -1,6 +1,3 @@
-
-#TODO: Add functionality of client to attempt re-connection to server when eavsedropper detected / channel fails
-
 from flask import Flask, render_template, request, session, redirect, url_for
 from flask_socketio import join_room, leave_room, send, SocketIO
 import random
