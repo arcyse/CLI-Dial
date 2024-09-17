@@ -6,9 +6,7 @@
         <title>Chat App</title>
         <!-- Link to the style sheet-->
         <link 
-          rel = "stylesheet"
-          href = "{{url_for('static', filename = 'css/style.css')}}"
-        />
+        rel = "stylesheet" href = "{{url_for('static', filename = 'style.css')}}"/>
         <!-- Link to the flask-socketIO script (from CDN) -->
         <script
         src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.0.1/socket.io.js"
@@ -17,8 +15,33 @@
         ></script> 
     </head>
     <body>
+        <div class="toolbar">
+            <h2>SeQ Chat</h2>
+            <button id="theme-toggle" class="button">Toggle theme</button>
+        </div>
         <div class="content"> <!-- Content div styled in CSS -->
             {% block content %} {% endblock %}
         </div>
+
+        <!-- Theme toggle -->
+
+        <script type="text/javascript">
+            const themeToggle = document.getElementById("theme-toggle");
+        
+            // Check for saved user preference, if any, and apply it
+            let currentTheme = localStorage.getItem("theme") || "light";
+            document.documentElement.setAttribute("data-theme", currentTheme);
+        
+            // Update the button text based on the current theme
+            themeToggle.innerText = currentTheme === "dark" ? "Light Mode" : "Dark Mode";
+        
+            themeToggle.addEventListener("click", () => {
+                // Toggle between light and dark themes
+                currentTheme = currentTheme === "dark" ? "light" : "dark"; // Update currentTheme here
+                document.documentElement.setAttribute("data-theme", currentTheme);
+                localStorage.setItem("theme", currentTheme); // Save the user's preference
+                themeToggle.innerText = currentTheme === "dark" ? "Light Mode" : "Dark Mode";
+            });
+        </script>        
     </body>
 </html>
