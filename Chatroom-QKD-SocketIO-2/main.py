@@ -1,5 +1,5 @@
 from flask import Flask, render_template, request, session, redirect, url_for
-from flask_socketio import join_room, leave_room, send, SocketIO
+from flask_socketio import join_room, leave_room, send, SocketIO, emit
 import random
 from string import ascii_uppercase
 import base64
@@ -27,6 +27,10 @@ def generate_unique_code(length):
     
     return code
 
+# Function to generate a random bright color
+# def generate_bright_color():
+#     return "#{:02x}{:02x}{:02x}".format(random.randint(128, 255), random.randint(128, 255), random.randint(128, 255))
+
 
 # Define routing for home page:
 @app.route('/', methods=["GET", "POST"])
@@ -48,15 +52,20 @@ def home():
         if join != False and not code:
             return render_template("home.html", error="Please enter a room code.", code=code, name=name)
 
+        # Normalize the room code to uppercase for storage and comparison
+        room = code.upper() if code else None
+        
+        print(f"Attempting to join room: {room}")
+        print(f"Available rooms: {rooms.keys()}")
+
         # Check if user wants to create a room:
-        room = code
         if create != False:
             room = generate_unique_code(4)
-            rooms[room] = {'members':0, 'messages':[]}
+            rooms[room] = {'members': 0, 'messages': [], 'users': [], 'creator': name}  # Initialize 'users' and 'creator'
         
         # Else, if user wants to join a room with code:
         # 1) If invalid code:
-        elif code not in rooms:
+        elif code.upper() not in rooms:
             return render_template("home.html", error="Room does not exist.", code=code, name=name)
 
         # 2) If valid code (or even in the case of creating a room):
@@ -94,6 +103,10 @@ def connect(auth):
     if room not in rooms:
         leave_room(room)
         return
+    
+    # Ensure the room has a 'users' key
+    if "users" not in rooms[room]:
+        rooms[room]["users"] = []
     
     #* Upon receiving connection request, simulate QKD and obtain keys, send back to client:
     '''
@@ -498,14 +511,19 @@ def connect(auth):
     #* Store user key:
     session["key"] = bin(int(resultA.hexdigest(), 16))[2:]
     #* Send back key to user for them to store:
-    #socketio.emit("key", session["key"])
-    socketio.emit("key", session['key'], room=request.sid)
+    socketio.emit("key", session["key"], room=request.sid)
 
+    # Assign a random bright color to the user
+    # color = generate_bright_color()
+    # user_info = {"name": name, "color": color}
 
     # Else, join the valid room:
     join_room(room)
     send({"name": name, "message": "has entered the room."}, to=room) # Send a JSON message to all people in the room
     rooms[room]["members"] += 1
+    rooms[room]["users"].append(name)
+    emit("updateUserList", {"users": rooms[room]["users"], "creator": rooms[room]["creator"]}, to=room)
+    emit("setUserName", {"name": name}, room=request.sid)
     print(f'{name} joined room {room}')
 
 # Disconnecting users from the chat:
@@ -515,12 +533,26 @@ def disconnect():
     name = session.get("name")
     leave_room(room)
 
+@socketio.on("disconnect")
+def disconnect():
+    room = session.get("room")
+    name = session.get("name")
+    leave_room(room)
+
     # Decrement member count of room:
     if room in rooms:
         rooms[room]["members"] -= 1
+        rooms[room]["users"] = [user for user in rooms[room]["users"] if user != name]
+        
+        # If the creator leaves, assign the next user as the new creator
+        if rooms[room]["creator"] == name and rooms[room]["users"]:
+            rooms[room]["creator"] = rooms[room]["users"][0]
+        
         if rooms[room]["members"] <= 0:
             del rooms[room]
-    
+        else:
+            emit("updateUserList", {"users": rooms[room]["users"], "creator": rooms[room]["creator"]}, to=room)
+
     # Send a message to all people in the room:
     send({"name": name, "message": "has left the room"}, to=room)
     print(f'{name} has left the room {room}')
@@ -543,26 +575,36 @@ def message(data):
 
     # Retrieve binary key from session and convert it to ASCII
     binary_key = session.get("key")
-    print(f'binary key: {binary_key}')
+    print('Binary key received from client:', binary_key)
     key = ''.join([chr(int(binary_key[i:i+8], 2)) for i in range(0, len(binary_key), 8)])  # Convert binary key to ASCII
-    print(f'key: {key}')
 
     encrypted_message = data["message"]  # Get Base64 encoded message from client
-    print(f'encrypted message: {encrypted_message}')
     original_text = xor_decrypt(encrypted_message, key)  # Decrypt the message using XOR
-    print(f'original text: {original_text}')
+    print('Decrypted original text:', original_text)
     
     content = {
         "name": session.get("name"),
         "message": original_text
     }
-    print(f'content: {content}')
 
     send(content, to=room)  # Send decrypted message to the room
-    print('Content sent to room ' + room)
     rooms[room]["messages"].append(content)
     print(f'{session.get("name")} said: {original_text}')
 
+@socketio.on("terminateRoom")
+def terminate_room():
+    room = session.get("room")
+    name = session.get("name")
+
+    if room in rooms and rooms[room]["creator"] == name:
+        # Notify all users in the room
+        emit("roomTerminated", {"code": room}, to=room)
+        
+        # Remove the room
+        del rooms[room]
+        print(f'Room {room} has been terminated by {name}')
 
 if __name__ == "__main__":
     socketio.run(app, debug=True)
+
+####################
