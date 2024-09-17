@@ -1,26 +1,44 @@
-<!-- Inherit code from base.html -->
 {% extends "base.html" %}
-<!-- Content block to ovveride (replace) -->
 {% block content %}
-<!-- HTML form which sends post request to home page when click submit -->
-<form method="post" class="buttons"> <!-- Class buttons for CSS styling -->
-    <h3>Enter the Chat Room</h3>
-    <div>
-        <label>Name:</label>
-        <input type="text" placeholder="Pick a name!" name="name" value="{{ name }}"/> <!-- Here, name is the key of the data when form is submitted -->
-        <!-- Pass back name as input if user makes mistake -->
-    </div>
-    <div class="join"> <!-- Join div is styled in style.CSS -->
-        <input type="text" placeholder="Room Code" name="code" value="{{ code }}"/>
-        <button type="submit" name="join">Join a Room</button>
-    </div>
-    <button type="submit" name="create" class="create-btn">Create a Room</button> <!-- create-btm class styled in CSS-->
+<div class="container">
+    <h1 class="title">Welcome to Chat Room</h1>
+    <p class="description">Join a chat room or create your own. Connect with friends and have fun!</p>
+    
+    <div class="landing-page">
+        <!-- Form for joining a room -->
+        <form method="post" class="form-container" id="join-room-form"> 
+            <div class="input-group">
+                <label for="name">Username</label>
+                <input type="text" id="name" placeholder="Pick a name!" name="name" value="{{ name }}" required/> 
+            </div>
+            <div class="input-group">
+                <label for="code">Room Code</label>
+                <input type="text" id="code" placeholder="Room Code" name="code" value="{{ code }}" required/>
+            </div>
+            <div class="button-group">
+                <button type="submit" name="join" class="create-btn">Join a Room</button>
+            </div>
+        </form>
 
-    <!-- Display error if present -->
-    {% if error %}
-    <ul>
-        <li> {{ error }}</li>
-    </ul>
-    {% endif %}
-</form>
+        <p class="or-text">OR</p>
+
+        <!-- Form for creating a room -->
+        <form method="post" class="form-container" id="create-room-form"> 
+            <div class="input-group">
+                <label for="name">Username</label>
+                <input type="text" id="name-create" placeholder="Pick a name!" name="name" value="{{ name }}" required/> 
+            </div>
+            <div class="button-group">
+                <button type="submit" name="create" class="create-btn create-room-btn">Create a Room</button>
+            </div>
+        </form>
+
+        <!-- Display error if present -->
+        {% if error %}
+        <ul class="error-list">
+            <li>{{ error }}</li>
+        </ul>
+        {% endif %}
+    </div>
+</div>
 {% endblock %}
