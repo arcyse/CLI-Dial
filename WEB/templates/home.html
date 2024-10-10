@@ -1,0 +1,45 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container">
+    <h1 class="title">Welcome to Chat Room</h1>
+    <p class="description">Join a chat room or create your own. Connect with friends and have fun!</p>
+    
+    <div class="landing-page">
+        <!-- Form for joining a room -->
+        <form method="post" class="form-container" id="join-room-form"> 
+            <div class="input-group">
+                <label for="name">Username</label>
+                <input type="text" id="name" placeholder="Pick a name!" name="name" value="{{ name }}" required/> 
+            </div>
+            <div class="input-group">
+                <label for="code">Room Code</label>
+                <input type="text" id="code" placeholder="Room Code" name="code" value="{{ code }}" required/>
+            </div>
+            <div class="button-group">
+                <button type="submit" name="join" class="create-btn">Join a Room</button>
+            </div>
+        </form>
+
+        <p class="or-text">OR</p>
+
+        <!-- Form for creating a room -->
+        <form method="post" class="form-container" id="create-room-form"> 
+            <div class="input-group">
+                <label for="name">Username</label>
+                <input type="text" id="name-create" placeholder="Pick a name!" name="name" value="{{ name }}" required/> 
+            </div>
+            <div class="button-group">
+                <button type="submit" name="create" class="create-btn create-room-btn">Create a Room</button>
+            </div>
+        </form>
+
+        <!-- Display error if present -->
+        {% if error %}
+        <ul class="error-list">
+            <li>{{ error }}</li>
+        </ul>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

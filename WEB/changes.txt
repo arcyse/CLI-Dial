@@ -1,0 +1,28 @@
+- import emit
+- Function to generate a random bright color (deprecated)
+- Normalize the room code to uppercase for storage and comparison
+- users var to hold user list
+- Implement user list
+- Creator tag to grant privileges
+- Creator has the privilege to terminate the room
+- On creator leaving; update creator tag to the next in line and update user list
+- socketio fn to handle termination of room
+
+
+- Add toolbar
+- Theme toggle button
+- Theme toggling JS logic
+
+- UI for user list
+- fn to update and fetch the user list
+- floating scroll to top button
+- auto-scroll to bottom while messaging but not when reading previous msgs
+- Import DOMPurify to sanitize the page
+- Import marked to support markdown feature in chat
+- fn to generate a unique color based off the usernames
+- fn to format timestamp in msgs
+- fn to implement a copy msg and a copy username button
+- fn to accommodate multi-line entry
+- re-working base fn(s) to send, create msgs
+- fn to implement scroll to top
+- exit button for users

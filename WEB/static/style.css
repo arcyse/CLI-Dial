@@ -1,0 +1,410 @@
+:root {
+    --background-color: #2f3136;
+    --border-color: #202225;
+    --text-color: #dcddde;
+    --button-bg: #7289da;
+    --button-bg-hover: #677bc4;
+    --input-bg: #40444b;
+    --message-bg: #36393f;
+    --shadow-color: rgba(0, 0, 0, 0.2);
+    --placeholder-color: #b9bbbe;
+    --user-list-bg: #36393f;
+    --code-bg: #000000;
+}
+
+[data-theme="light"] {
+    --background-color: #f9f9f9;
+    --border-color: #e0e0e0;
+    --text-color: #333333;
+    --button-bg: #7289da;
+    --button-bg-hover: #677bc4;
+    --input-bg: #fff;
+    --message-bg: #e0e0e0;
+    --shadow-color: rgba(0, 0, 0, 0.1);
+    --placeholder-color: #666;
+    --user-list-bg: #e0e0e0;
+    --code-bg: #ffffff;
+}
+
+body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    background-color: var(--background-color);
+    color: var(--text-color);
+}
+
+.toolbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 20px;
+    background-color: var(--background-color);
+    border-bottom: 1px solid var(--border-color);
+    box-shadow: 0 2px 4px var(--shadow-color);
+    border-radius: 0 0 10px 10px;
+}
+
+.toolbar h2 {
+    margin: 0;
+    font-style: italic;
+}
+
+.button {
+    background-color: var(--button-bg);
+    color: white;
+    border: none;
+    border-radius: 20px;
+    padding: 10px 15px;
+    cursor: pointer;
+    transition: background-color 0.3s, transform 0.3s;
+}
+
+.button:hover {
+    background-color: var(--button-bg-hover);
+    transform: scale(1.05);
+}
+
+#terminate-btn {
+    background-color: crimson;
+    color: white;
+    border: none;
+    border-radius: 20px;
+    padding: 10px 15px;
+    cursor: pointer;
+    transition: background-color 0.3s, transform 0.3s;
+}
+
+#terminate-btn:hover {
+    background-color: #ff9999; /* Darker soft red on hover */
+    color: #ffffff; /* White text on hover */
+    transform: scale(1.05);
+}
+
+#exit-btn {
+    align-self: flex-end;
+    margin-top: 10px;
+    background-color: rgb(66, 66, 66);
+    color: white;
+    border: none;
+    border-radius: 20px;
+    padding: 10px 15px;
+    cursor: pointer;
+    transition: background-color 0.3s, transform 0.3s;
+}
+
+#exit-btn:hover {
+    background-color: #ededed;
+    color: #232323; 
+    transform: scale(1.05);
+}
+
+.copy-button {
+    display: none;
+    position: absolute;
+    right: 10px;
+    padding: 5px 10px; /* Smaller padding */
+    border: none;
+    border-radius: 5px;
+    background-color: var(--button-bg);
+    color: white;
+    cursor: pointer;
+    transition: background-color 0.3s, transform 0.3s;
+    font-size: 0.8em; /* Smaller font size */
+}
+
+.copy-button:hover {
+    background-color: var(--button-bg-hover);
+    transform: scale(1.05);
+}
+
+#user-list li:hover .copy-button {
+    display: block; /* Show the button on hover */
+}
+
+.text:hover .copy-button {
+    display: block; /* Show the button on hover */
+}
+
+.chat-container {
+    display: flex;
+    height: calc(100vh - 50px); /* Adjust height to account for toolbar */
+}
+
+.sidebar {
+    width: 250px;
+    background-color: var(--background-color);
+    border-right: 1px solid var(--border-color);
+    padding: 20px;
+    box-shadow: 2px 0 4px var(--shadow-color);
+    border-radius: 10px 0 0 10px;
+}
+
+.sidebar .toolbar {
+    margin-bottom: 20px;
+}
+
+.sidebar .users {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    margin-top: 20px;
+    width: 100%;
+}
+
+.sidebar .users h3 {
+    color: var(--text-color);
+    margin-bottom: 10px;
+    align-self: flex-start;
+    display: flex;
+    align-items: center;
+}
+
+.user-count {
+    background-color: var(--user-list-bg);
+    color: var(--text-color);
+    padding: 2px 8px;
+    border-radius: 10px;
+    margin-left: 10px;
+}
+
+.user-list-wrapper {
+    background-color: var(--user-list-bg);
+    margin: 15px 0;
+    padding: 7px;
+    border-radius: 15px;
+    align-self: flex-end;
+    width: 100%;
+}
+
+#user-list li {
+    position: relative;
+    padding: 10px;
+    list-style: none;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.sidebar .users ul {
+    list-style: none;
+    padding: 0;
+}
+
+.sidebar .users ul li {
+    padding: 10px;
+    color: var(--text-color);
+    cursor: pointer;
+    border-radius: 10px;
+    transition: background-color 0.3s, transform 0.3s;
+    font-size: 0.875em; /* Small font size */
+    font-weight: bold; /* Bold font weight */
+}
+
+.sidebar .users ul li:hover {
+    background-color: var(--button-bg-hover);
+    transform: scale(1.02);
+}
+
+.chat-main {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    background-color: var(--background-color);
+    box-shadow: -2px 0 4px var(--shadow-color);
+    border-radius: 0 10px 10px 0;
+}
+
+.chat-header {
+    padding: 20px;
+    border-bottom: 1px solid var(--border-color);
+    box-shadow: 0 2px 4px var(--shadow-color);
+    border-radius: 10px 10px 0 0;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.messages {
+    flex: 1;
+    overflow-y: auto;
+    padding: 20px;
+}
+
+.inputs {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 20px;
+    border-top: 1px solid var(--border-color);
+    background-color: var(--input-bg);
+    box-shadow: 0 -2px 4px var(--shadow-color);
+    border-radius: 0 0 10px 10px;
+}
+
+.inputs input {
+    flex: 1;
+    padding: 10px;
+    border: 1px solid var(--border-color);
+    border-radius: 20px;
+    margin-right: 10px;
+    box-shadow: inset 0 1px 2px var(--shadow-color), 0 2px 4px rgba(0, 0, 0, 0.1); /* Add outer shadow */
+    transition: box-shadow 0.3s, background-color 0.3s, color 0.3s, transform 0.3s; /* Add transform for zoom effect */
+    background-color: var(--input-bg);
+    color: var(--text-color);
+}
+
+.inputs input:focus {
+    box-shadow: 0 0 5px var(--button-bg), 0 2px 4px rgba(0, 0, 0, 0.1); /* Add outer shadow */
+}
+
+.inputs input:hover {
+    transform: scale(1.02); /* Zoom effect on hover */
+}
+
+.inputs input::placeholder {
+    color: var(--placeholder-color); /* Use placeholder color variable */
+    font-weight: bold; /* Bold placeholder text */
+}
+
+.inputs button {
+    background-color: var(--button-bg);
+    color: white;
+    border: none;
+    border-radius: 20px;
+    padding: 10px 15px;
+    cursor: pointer;
+    transition: background-color 0.3s, transform 0.3s;
+    box-shadow: 0 2px 4px var(--shadow-color);
+}
+
+.inputs button:hover {
+    background-color: var(--button-bg-hover);
+    transform: scale(1.05);
+}
+
+.text {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 10px;
+    padding: 10px;
+    border-radius: 10px;
+    background-color: var(--message-bg);
+    box-shadow: 0 2px 4px var(--shadow-color);
+    position: relative;
+}
+
+.text .timestamp {
+    font-size: 10px;
+    color: darkgray;
+    margin-bottom: 5px;
+}
+
+.text .message-content {
+    font-weight: bold; 
+    color: var(--text-color);
+}
+
+.text .username {
+    font-weight: bold;
+    color: var(--text-color);
+}
+
+.inputs textarea {
+    flex: 1;
+    padding: 10px;
+    border: 1px solid var(--border-color);
+    border-radius: 20px;
+    margin-right: 10px;
+    box-shadow: inset 0 1px 2px var(--shadow-color), 0 2px 4px rgba(0, 0, 0, 0.1); /* Add outer shadow */
+    transition: box-shadow 0.3s, background-color 0.3s, color 0.3s, transform 0.3s; /* Add transform for zoom effect */
+    background-color: var(--input-bg);
+    color: var(--text-color);
+    resize: none; /* Prevent resizing */
+}
+
+.inputs textarea:focus {
+    box-shadow: 0 0 5px var(--button-bg), 0 2px 4px rgba(0, 0, 0, 0.1); /* Add outer shadow */
+}
+
+.inputs textarea:hover {
+    transform: scale(1.02); /* Zoom effect on hover */
+}
+
+.inputs textarea::placeholder {
+    color: var(--placeholder-color); /* Use placeholder color variable */
+    font-weight: bold; /* Bold placeholder text */
+}
+
+/* Styles for Markdown elements */
+.text .message-content p {
+    margin: 0;
+}
+
+.text .message-content a {
+    color: #1e90ff;
+    text-decoration: none;
+}
+
+.text .message-content a:hover {
+    text-decoration: underline;
+}
+
+.text .message-content code {
+    background-color: var(--code-bg);
+    padding: 2px 4px;
+    border-radius: 3px;
+}
+
+.text .message-content pre {
+    background-color: var(--code-bg);
+    padding: 10px;
+    border-radius: 5px;
+    overflow: auto;
+}
+
+/* Custom scrollbar styles for the messages container */
+.messages {
+    overflow-y: auto;
+    scrollbar-width: thin; /* For Firefox */
+    scrollbar-color: var(--button-bg) var(--input-bg); /* For Firefox */
+}
+
+.messages::-webkit-scrollbar {
+    width: 8px; /* Width of the scrollbar */
+}
+
+.messages::-webkit-scrollbar-track {
+    background: var(--input-bg); /* Background of the scrollbar track */
+}
+
+.messages::-webkit-scrollbar-thumb {
+    background-color: var(--button-bg); /* Color of the scrollbar thumb */
+    border-radius: 10px; /* Rounded corners */
+    border: 2px solid var(--input-bg); /* Padding around the thumb */
+}
+
+.messages::-webkit-scrollbar-thumb:hover {
+    background-color: var(--button-bg-hover); /* Color of the scrollbar thumb on hover */
+}
+
+/* Floating button styles */
+#scroll-to-top-btn {
+    display: none; /* Initially hidden */
+    position: absolute;
+    top: 20%; /* Adjust this value based on the height of your chat header */
+    right: 40%;
+    width: 60px;
+    height: 20px;
+    background-color: var(--button-bg);
+    color: white;
+    border-radius: 15%;
+    cursor: pointer;
+    box-shadow: 0 2px 4px var(--shadow-color);
+    transition: background-color 0.3s, transform 0.3s;
+    z-index: 1000; /* Ensure it is above other elements */
+}
+
+#scroll-to-top-btn:hover {
+    background-color: var(--button-bg-hover);
+    transform: scale(1.5);
+}
